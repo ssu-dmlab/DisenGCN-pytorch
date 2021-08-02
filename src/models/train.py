@@ -23,7 +23,7 @@ class MyTrainer:
         optimizer = torch.optim.Adam(model.parameters(), lr=hyperpm['lr'], weight_decay=hyperpm['reg'])
         model.train()
 
-        pbar = tqdm(range(epochs), position=0, leave=False, desc='epoch')
+        pbar = tqdm(range(epochs), position=1, leave=False, desc='epoch')
         early_count, best_acc, best_model = 0, 0, None
 
         trn_idx, val_idx, tst_idx = dataset.get_idx()
@@ -32,16 +32,15 @@ class MyTrainer:
 
         feat = sprs_torch_from_scipy(feat).to(self.device)
         targ = torch.from_numpy(targ).to(self.device)
-
+        src_trg_edges = torch.from_numpy(src_trg_edges).to(self.device)
 
         for epoch in pbar:
             optimizer.zero_grad()
             pred_prob = model(feat, src_trg_edges)
 
             pred_label = torch.argmax(pred_prob, dim=1)
-            targ_label = torch.argmax(targ, dim=1)
-            trn_acc = torch.mean(pred_label[trn_idx] == targ_label[trn_idx])
-            val_acc = torch.mean(pred_label[val_idx] == targ_label[val_idx])
+            trn_acc = (pred_label[trn_idx] == targ[trn_idx]).sum() / len(trn_idx)
+            val_acc = (pred_label[val_idx] == targ[val_idx]).sum() / len(val_idx)
 
             if val_acc > best_acc:
                 best_acc, best_model = val_acc, deepcopy(model.state_dict())
@@ -49,12 +48,17 @@ class MyTrainer:
             else:
                 early_count += 1
 
-            loss = F.nll_loss(pred_prob[trn_idx], targ[trn_idx])
-            loss.backward()  # gradient 계산
-            optimizer.step()  # 가중치 조절
+            # loss = F.nll_loss(pred_prob[trn_idx], targ[trn_idx])
+            loss = -torch.log(pred_prob[(range(len(trn_idx)), targ[trn_idx])]).sum()
+            loss.backward()
+            optimizer.step()
 
-            pbar.write(f'Epoch : {epoch:02}/{epochs}    loss : {loss:.4}    trn_acc : {trn_acc:.4} val_acc : {val_acc:.4}')
+            pbar.write(
+                f'Epoch : {epoch + 1:02}/{epochs}    loss : {loss:.4f}    trn_acc : {trn_acc:.4f} val_acc : {val_acc:.4f}')
             pbar.update()
 
             if (early_count == hyperpm['early']):
                 break
+
+        model.load_state_dict(best_model)
+        return model
