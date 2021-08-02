@@ -51,10 +51,17 @@ class RoutingLayer(nn.Module):
         # return u
         # src는 neighbor
         m, src, trg = src_trg.shape[1], src_trg[0], src_trg[1]
+        if (not isinstance(trg, torch.Tensor)):
+            trg = torch.from_numpy(trg)
+
+        if (not isinstance(src, torch.Tensor)):
+            src = torch.from_numpy(src)
+
+        src, trg = src.long(), trg.long()
         n, d = x.shape
         # k : # of factors(channels), delta_d : embedding dim of each factor
         k, delta_d = self.k, d // self.k
-        #factor별 임베딩이 균일하게 나오기 위해, normalize
+        # factor별 임베딩이 균일하게 나오기 위해, normalize
         x = F.normalize(x.view(n, k, delta_d), dim=2).view(n, d)
         # 각각 neighbor의 factor k에 관한 피쳐
         z = x[src].view(m, k, delta_d)
@@ -63,8 +70,14 @@ class RoutingLayer(nn.Module):
 
         for t in range(self.routit):
             p = (z * c[trg].view(m, k, delta_d)).sum(dim=2)
-            p = F.softmax(p, dim = 1)
-            print(p.shape)
+            p = F.softmax(p / self.tau, dim=1)
+
+            p = p.view(-1, 1).repeat(1, delta_d).view(m, k, delta_d)
+
+            weight_sum = (p * z).view(m, d)
+            c = c.index_add_(0, trg, weight_sum)
+            c = F.normalize(c.view(n, k, delta_d), dim=2).view(n, d)
+        return c
 
 
 class DisenGCN(nn.Module):
@@ -85,7 +98,6 @@ class DisenGCN(nn.Module):
         self.dropout = hyperpm['dropout']
 
     def forward(self, feat, src_trg_edges):
-
         x = torch.relu(self.pca(feat))
         for conv in tqdm(self.conv_ls, position=0, leave=False, desc='RoutingLayer'):
             x = conv(x, src_trg_edges)

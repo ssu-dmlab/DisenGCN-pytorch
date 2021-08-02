@@ -3,6 +3,7 @@ import torch.nn
 import numpy as np
 import torch.nn.functional as F
 
+from math import isnan
 from tqdm import tqdm
 from copy import deepcopy
 from models.model import DisenGCN
@@ -48,7 +49,7 @@ class MyTrainer:
             else:
                 early_count += 1
 
-            # loss = F.nll_loss(pred_prob[trn_idx], targ[trn_idx])
+            #loss = F.nll_loss(pred_prob[trn_idx], targ[trn_idx])
             loss = -torch.log(pred_prob[(range(len(trn_idx)), targ[trn_idx])]).sum()
             loss.backward()
             optimizer.step()
