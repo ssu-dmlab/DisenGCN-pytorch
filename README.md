@@ -20,6 +20,8 @@
    1) 이미 구현된 함수를 이용하면, softmax된 값들의 loss가 음수가 나오는 이상한 상황...
    2) 직접 negative log likelihood loss를 구하면 문제가 없음
 
+4) src_trg_edges가 tensor에서 ndarray로 바뀌는 문제
+   1) tonumpy로 바꿔주는 코드가 없는데 어느순간 타입이 바뀜 
 
 
 '''   
