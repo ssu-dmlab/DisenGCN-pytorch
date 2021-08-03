@@ -1,15 +1,15 @@
 # DisenGCN-pytorch
-##1. Citation 데이터는 Directed Graph
+## 1. Citation 데이터는 Directed Graph   
     만약 Directed Graph로 처리한다면, 최근에 쓰여진 논문(인용횟수가 적음)은 neighbor가 없기 때문에 초기 피쳐를 그대로 가져감  
     그래서 'bidirection'을 추가해서 edge를 양방향으로 만듬
 
-##2. Effect about neighborhood Sampling
+## 2. Effect about neighborhood Sampling   
     초기 구현 방식은 matrix vectorization을 위해 같은 neighbor Degree를 맞춰줌(sample number).
     만약 어떤 노드의 neighbor Degree가 sample 개수보다 작다면, expand(해당 이웃들의 영향이 과적합될 가능성)
     또한 random sampling이므로, 특정 이웃의 영향이 무시될 가능성도 존재하다.
     따라서 전체 이웃을 다 고려할 수 있는 구현 방식으로 변환(routing Layer)
 
-##3. 해결되지 않은 문제
+## 3. 해결되지 않은 문제   
 1) pca layer(SparseInputLayer)의 parameter가 nan이 되는 문제   
    1) epoch를 돌리다보면, pca layer의 parameter가 nan이 됨, lr을 줄여봐도 동일한 현상
 
@@ -39,3 +39,6 @@
     :param nbsz: Size of the sampled neighborhood   
     :param tau: Softmax scaling parameter   
 '''
+
+[paper](https://www.naver.com)   
+[raw code](https://jianxinma.github.io/assets/DisenGCN-py3.zip)
