@@ -32,11 +32,14 @@ class RoutingLayer(nn.Module):
     def forward(self, x, src_trg):
 
         m, src, trg = src_trg.shape[1], src_trg[0], src_trg[1]
-        if (not isinstance(trg, torch.Tensor)):
-            trg = torch.from_numpy(trg)
 
-        if (not isinstance(src, torch.Tensor)):
-            src = torch.from_numpy(src)
+        # #######################################
+        # if (not isinstance(trg, torch.Tensor)):
+        #     trg = torch.from_numpy(trg)
+        #
+        # if (not isinstance(src, torch.Tensor)):
+        #     src = torch.from_numpy(src)
+        ######################################
 
         src, trg = src.long(), trg.long()
         n, d = x.shape
@@ -82,3 +85,4 @@ class DisenGCN(nn.Module):
             x = conv(x, src_trg_edges)
         x = self.mlp(x)
         return F.softmax(x, dim=1)
+

@@ -51,6 +51,11 @@ class MyTrainer:
 
             #loss = F.nll_loss(pred_prob[trn_idx], targ[trn_idx])
             loss = -torch.log(pred_prob[(range(len(trn_idx)), targ[trn_idx])]).sum()
+            #################debugging#######################
+            if(isnan(loss)):
+                for name, param in model.named_parameters():
+                    print(name, param)
+            #################################################
             loss.backward()
             optimizer.step()
 

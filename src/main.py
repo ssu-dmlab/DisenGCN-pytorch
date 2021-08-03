@@ -43,6 +43,7 @@ def run_model(device, hyperpm, dataset):
 def main(datadir='../datasets/',
          dataname='Cora',
          cpu=False,
+         bidirect=True,
          nepoch=200,
          early=-1,
          lr=0.03,
@@ -53,12 +54,12 @@ def main(datadir='../datasets/',
          nhidden=16,
          routit=6,
          nbsz=20,
-         tau=1.0,
-         bidirect=True):
+         tau=1.0):
     """
     :param datadir: directory of dataset
     :param dataname: name of the dataset
     :param cpu: Insist on using CPU instead of CUDA
+    :param bidirect : Use graph as undirected
     :param nepoch: Max number of epochs to train
     :param early: Extra iterations before early-stopping(default : -1; not using early-stopping) //8
     :param lr: Initial learning rate
@@ -70,7 +71,6 @@ def main(datadir='../datasets/',
     :param routit: Number of iterations when routing
     :param nbsz: Size of the sampled neighborhood
     :param tau: Softmax scaling parameter
-    :param bidirect : Use graph as undirected
     """
 
     logger.info("The main procedure has started with the following parameters:")
@@ -79,6 +79,7 @@ def main(datadir='../datasets/',
     param['datadir'] = datadir
     param['dataname'] = dataname
     param['device'] = device
+    param['bidirect'] =bidirect
     log_param(param)
 
     logger.info("Training the model has begun with the following hyperparameters:")
@@ -94,7 +95,6 @@ def main(datadir='../datasets/',
     hyperpm['routit'] = routit
     hyperpm['nbsz'] = nbsz
     hyperpm['tau'] = tau
-    hyperpm['bidirect'] = bidirect
     log_param(hyperpm)
 
     dataset = DataLoader(data_dir=param['datadir'],
