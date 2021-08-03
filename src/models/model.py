@@ -30,26 +30,7 @@ class RoutingLayer(nn.Module):
         self.tau = hyperpm['tau']
 
     def forward(self, x, src_trg):
-        # m, src, trg = src_trg.shape[1], src_trg[0], src_trg[1]
-        # n, d = x.shape
-        # k, delta_d = self.k, d // self.k
-        # x = F.normalize(x.view(n, k, delta_d), dim=2).view(n, d)
-        # z = x[src].view(m, k, delta_d)
-        # u = x
-        # if (not isinstance(trg, torch.Tensor)):
-        #     trg = torch.from_numpy(trg)
-        # scatter_idx = trg.view(m, 1).expand(m, d)
-        # for clus_iter in range(self.routit):
-        #     p = (z * u[trg].view(m, k, delta_d)).sum(dim=2)
-        #     p = F.softmax(p / self.tau, dim=1)
-        #     scatter_src = (z * p.view(m, k, 1)).view(m, d)
-        #     u = torch.zeros(n, d, device=x.device)
-        #     u.scatter_add_(0, scatter_idx, scatter_src)
-        #     u += x
-        #     # noinspection PyArgumentList
-        #     u = F.normalize(u.view(n, k, delta_d), dim=2).view(n, d)
-        # return u
-        # src는 neighbor
+
         m, src, trg = src_trg.shape[1], src_trg[0], src_trg[1]
         if (not isinstance(trg, torch.Tensor)):
             trg = torch.from_numpy(trg)
@@ -71,7 +52,6 @@ class RoutingLayer(nn.Module):
         for t in range(self.routit):
             p = (z * c[trg].view(m, k, delta_d)).sum(dim=2)
             p = F.softmax(p / self.tau, dim=1)
-
             p = p.view(-1, 1).repeat(1, delta_d).view(m, k, delta_d)
 
             weight_sum = (p * z).view(m, d)
@@ -88,7 +68,6 @@ class DisenGCN(nn.Module):
         self.out_dim = out_dim
 
         self.pca = SparseInputLayer(in_dim, out_dim)
-
         self.conv_ls = []
         for i in range(hyperpm['nlayer']):
             conv = RoutingLayer(hyperpm)
