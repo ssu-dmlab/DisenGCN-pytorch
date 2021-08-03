@@ -40,5 +40,5 @@
     :param tau: Softmax scaling parameter   
 '''
 
-[paper](https://www.naver.com)   
+[paper](https://jianxinma.github.io/assets/DisenGCN.pdf)   
 [raw code](https://jianxinma.github.io/assets/DisenGCN-py3.zip)
