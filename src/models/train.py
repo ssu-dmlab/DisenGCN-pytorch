@@ -17,6 +17,7 @@ class MyTrainer:
         self.device = device
 
     def train_model(self, dataset, hyperpm):
+        torch.autograd.set_detect_anomaly(True)
         self.hyperpm = hyperpm
         epochs = hyperpm['nepoch']
 
@@ -49,12 +50,13 @@ class MyTrainer:
             else:
                 early_count += 1
 
-            #loss = F.nll_loss(pred_prob[trn_idx], targ[trn_idx])
-            loss = -torch.log(pred_prob[(range(len(trn_idx)), targ[trn_idx])]).sum()
+            loss = F.nll_loss(pred_prob[trn_idx], targ[trn_idx])
+            #loss = -torch.log(pred_prob[(range(len(trn_idx)), targ[trn_idx])]).sum()
             #################debugging#######################
-            if(isnan(loss)):
-                for name, param in model.named_parameters():
-                    print(name, param)
+            # if(True):
+            #     for name, param in model.named_parameters():
+            #         if(name[0:3] == 'pca'):
+            #             print(name, param)
             #################################################
             loss.backward()
             optimizer.step()

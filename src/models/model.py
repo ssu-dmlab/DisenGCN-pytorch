@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+
 from tqdm import tqdm
 
 
@@ -34,11 +35,11 @@ class RoutingLayer(nn.Module):
         m, src, trg = src_trg.shape[1], src_trg[0], src_trg[1]
 
         # #######################################
-        # if (not isinstance(trg, torch.Tensor)):
-        #     trg = torch.from_numpy(trg)
-        #
-        # if (not isinstance(src, torch.Tensor)):
-        #     src = torch.from_numpy(src)
+        if (not isinstance(trg, torch.Tensor)):
+            trg = torch.from_numpy(trg)
+
+        if (not isinstance(src, torch.Tensor)):
+            src = torch.from_numpy(src)
         ######################################
 
         src, trg = src.long(), trg.long()
@@ -80,9 +81,12 @@ class DisenGCN(nn.Module):
         self.dropout = hyperpm['dropout']
 
     def forward(self, feat, src_trg_edges):
-        x = torch.relu(self.pca(feat))
+        x = F.leaky_relu(self.pca(feat))
         for conv in tqdm(self.conv_ls, position=0, leave=False, desc='RoutingLayer'):
+
             x = conv(x, src_trg_edges)
+
         x = self.mlp(x)
-        return F.softmax(x, dim=1)
+
+        return F.log_softmax(x, dim=1)
 

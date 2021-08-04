@@ -44,6 +44,7 @@ def main(datadir='../datasets/',
          dataname='Cora',
          cpu=False,
          bidirect=True,
+         seed=23,
          nepoch=200,
          early=-1,
          lr=0.03,
@@ -60,6 +61,7 @@ def main(datadir='../datasets/',
     :param dataname: name of the dataset
     :param cpu: Insist on using CPU instead of CUDA
     :param bidirect : Use graph as undirected
+    :param seed : seed
     :param nepoch: Max number of epochs to train
     :param early: Extra iterations before early-stopping(default : -1; not using early-stopping) //8
     :param lr: Initial learning rate
@@ -79,7 +81,8 @@ def main(datadir='../datasets/',
     param['datadir'] = datadir
     param['dataname'] = dataname
     param['device'] = device
-    param['bidirect'] =bidirect
+    param['bidirect'] = bidirect
+    param['seed'] = seed
     log_param(param)
 
     logger.info("Training the model has begun with the following hyperparameters:")
@@ -101,7 +104,7 @@ def main(datadir='../datasets/',
                          data_name=param['dataname'],
                          bidirection=bidirect)
 
-    set_rng_seed(23)
+    set_rng_seed(seed)
     accuracy = run_model(device=device,
                          hyperpm=hyperpm,
                          dataset=dataset)

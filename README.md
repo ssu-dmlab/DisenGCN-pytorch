@@ -11,7 +11,8 @@
 
 ## 3. 해결되지 않은 문제   
 1) pca layer(SparseInputLayer)의 parameter가 nan이 되는 문제   
-   1) epoch를 돌리다보면, pca layer의 parameter가 nan이 됨, lr을 줄여봐도 동일한 현상
+   1) epoch를 돌리다보면, pca layer의 parameter가 nan이 됨, lr을 줄여봐도 동일한 현상  
+      1) pca후 relu를 leaky_relu로 변경하니 잘 돌아감... 원인은 못 찾음
 
 2) Citeseer 데이터는 노드의 개수와 test_idx의 최댓값이 다름.
    1) 데이터 전처리 과정에서 tst_idx에는 없는 idx들은 0으로 맞춰줘야함
@@ -22,6 +23,7 @@
 
 4) src_trg_edges가 tensor에서 ndarray로 바뀌는 문제
    1) tonumpy로 바꿔주는 코드가 없는데 어느순간 타입이 바뀜 
+
 
 
 '''   

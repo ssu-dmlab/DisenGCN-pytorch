@@ -1,0 +1,8 @@
+#ignore all .idea file
+*.idea
+
+#ignore all .DS_Store
+*.DS_Store
+
+#ignore all __pycache__
+*.__pycache__
