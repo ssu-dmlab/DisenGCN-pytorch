@@ -7,7 +7,7 @@ from math import isnan
 from tqdm import tqdm
 from copy import deepcopy
 from models.model import DisenGCN
-from utils import sprs_torch_from_scipy
+
 
 
 class MyTrainer:
@@ -32,9 +32,6 @@ class MyTrainer:
         _, feat, targ = dataset.get_graph_feat_targ()
         src_trg_edges = dataset.get_src_trg_edges()
 
-        feat = sprs_torch_from_scipy(feat).to(self.device)
-        targ = torch.from_numpy(targ).to(self.device)
-        src_trg_edges = torch.from_numpy(src_trg_edges).to(self.device)
 
         for epoch in pbar:
             optimizer.zero_grad()

@@ -34,14 +34,6 @@ class RoutingLayer(nn.Module):
 
         m, src, trg = src_trg.shape[1], src_trg[0], src_trg[1]
 
-        # #######################################
-        if (not isinstance(trg, torch.Tensor)):
-            trg = torch.from_numpy(trg)
-
-        if (not isinstance(src, torch.Tensor)):
-            src = torch.from_numpy(src)
-        ######################################
-
         src, trg = src.long(), trg.long()
         n, d = x.shape
         # k : # of factors(channels), delta_d : embedding dim of each factor

@@ -9,7 +9,6 @@ class MyEvaluator:
         with torch.no_grad():
             model.eval()
             _, feat, targ = dataset.get_graph_feat_targ()
-            feat, targ = sprs_torch_from_scipy(feat), torch.tensor(targ)
             src_trg = dataset.get_src_trg_edges()
             _, _, tst_idx = dataset.get_idx()
 

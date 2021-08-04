@@ -102,7 +102,8 @@ def main(datadir='../datasets/',
 
     dataset = DataLoader(data_dir=param['datadir'],
                          data_name=param['dataname'],
-                         bidirection=bidirect)
+                         bidirection=bidirect,
+                         device = device)
 
     set_rng_seed(seed)
     accuracy = run_model(device=device,
