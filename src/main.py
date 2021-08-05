@@ -35,13 +35,11 @@ def run_model(device, hyperpm, dataset):
     return accuracy
 
 
-
-
-def main(datadir='../datasets/',
+def main(datadir='datasets/',
          dataname='Cora',
          cpu=False,
          bidirect=True,
-         seed=23,
+         seed=-1,
          nepoch=200,
          early=-1,
          lr=0.03,
@@ -106,7 +104,7 @@ def main(datadir='../datasets/',
     accuracy = run_model(device=device,
                          hyperpm=hyperpm,
                          dataset=dataset)
-
+    return accuracy
     logger.info(f"The model has been trained. The test accuracy is {accuracy:.4}")
 
 # Press the green button in the gutter to run the script.

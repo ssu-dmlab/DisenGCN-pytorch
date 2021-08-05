@@ -10,7 +10,7 @@ from utils import sprs_torch_from_scipy
 
 
 class DataLoader:
-    def __init__(self, data_dir='../datasets/', data_name='Cora', bidirection=True, device='cpu'):
+    def __init__(self, data_dir='datasets/', data_name='Cora', bidirection=True, device='cpu'):
         self.device = device
         data_tmp = []
         data_path = os.path.join(data_dir, data_name, f'raw/ind.{data_name.lower()}.')
@@ -45,9 +45,10 @@ class DataLoader:
         targ[val_idx, :] = ally[val_idx, :]
         targ[tst_idx, :] = ty
         # one-hot encoding -> label number
-        targ = np.argwhere(targ == 1)[:, 1].reshape(-1)
-        targ = torch.from_numpy(targ).to(self.device)
-
+        label = np.argwhere(targ == 1)
+        targ = np.zeros(n)
+        targ[label[:, 0]] = label[:, 1]
+        targ = torch.from_numpy(targ).to(self.device).long()
         logger.info(f'Dataset: {data_name}  Dim: #node X #feature ~ #class = {n} X {d} ~ {c}')
 
         edges = np.array(graph.edges)

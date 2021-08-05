@@ -16,4 +16,5 @@ class MyEvaluator:
             tst_pred_label = torch.argmax(tst_pred_prob, dim = 1)
             tst_acc = (tst_pred_label == targ[tst_idx]).sum() / len(tst_idx)
 
+
             return tst_acc

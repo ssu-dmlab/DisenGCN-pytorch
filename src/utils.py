@@ -1,11 +1,14 @@
 import random
 import torch
 import numpy as np
+import time
 
 from loguru import logger
 
 
-def set_rng_seed(seed = 23):
+def set_rng_seed(seed):
+    if (seed == -1):
+        seed = int(time.time() / 3600)
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
