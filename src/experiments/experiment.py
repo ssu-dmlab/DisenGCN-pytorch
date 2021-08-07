@@ -89,7 +89,7 @@ def main():
 
     hyperpms = dict()
     hyperpms['ncaps'] = [4 * (2 ** i) for i in range(4)]
-    hyperpms['ndim'] = [64, 128, 256]
+    hyperpms['nhidden'] = [8, 16, 32]
 
     run_experiments(datas[0], 3, **hyperpms)
 
