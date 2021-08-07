@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 
 import os.path
@@ -39,7 +39,7 @@ def main(datadir='datasets/',
          dataname='Cora',
          cpu=False,
          bidirect=True,
-         seed=-1,
+         seed = -1,
          nepoch=200,
          early=-1,
          lr=0.03,
@@ -48,6 +48,7 @@ def main(datadir='datasets/',
          nlayer=5,
          ncaps=7,
          nhidden=16,
+         ndim=64,
          routit=6,
          nbsz=20,
          tau=1.0):
@@ -89,7 +90,8 @@ def main(datadir='datasets/',
     hyperpm['dropout'] = dropout
     hyperpm['nlayer'] = nlayer
     hyperpm['ncaps'] = ncaps
-    hyperpm['nhidden'] = nhidden
+    hyperpm['nhidden'] = ndim // ncaps
+    #hyperpm['nhidden'] = nhidden
     hyperpm['routit'] = routit
     hyperpm['nbsz'] = nbsz
     hyperpm['tau'] = tau

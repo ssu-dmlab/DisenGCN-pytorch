@@ -1,8 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import time
+import os, sys
+import numpy as np
+import time
+
 from itertools import product
-from ..main import main
+
+# 상위 경로 path 추가
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from main import main as m
 
 
 # datanames = ['Cora']
@@ -24,23 +31,68 @@ from ..main import main
 #                 f.write(f'{dataname},{lr},{reg},{accuracy},{Time}
 
 
-def run_experiments(file_dir, hyperpms):
-    hyperpm = hyperpms.keys()
-    permutation = list(product(*hyperpm.items()))
+def run_experiments(data_name, times, **hyperpms):
+    hpm_names = list(hyperpms.keys())
+    permutation = list(product(*hyperpms.values()))
+
+    hpm = dict()
+    for key, value in zip(hpm_names, permutation):
+        hpm[key] = value
+
+    file_dir = f'/Volumes/GoogleDrive/.shortcut-targets-by-id/107r5K0_qzMzC2U5GN3KdxA907I9lnkmC/Geonwoo Ko/Research/DisenGCN-pytorch/src/experiments/result/'
+
+    file_name = ''
+    for hpm_name in hpm_names:
+        file_name += f'{hpm_name}_'
+    file_name += f'{data_name}.csv'
+    file_path = f'{file_dir}/{data_name}/{file_name}'
+
+    write_result_csv(file_path, [*hpm_names, 'time', 'accuracy_mean', 'accuracy_std'], 'w')
 
     for perm in permutation:
-        pass
+        hpm = dict()
+        for key, value in zip(hpm_names, perm):
+            hpm[key] = value
+
+        accuracy = []
+        Time = time.time()
+        for i in range(times):
+            accuracy.append(m(dataname=data_name, early=10, **hpm))
+        Time = time.time() - Time
+
+        write_result_csv(file_path, [*hpm.keys(), Time, np.mean(accuracy), np.std(accuracy)])
 
 
-def hyperpm_generator(start, term, len, type='difference'):  # 'rate'
-    if type == 'difference':
-        return [start + term * i for i in range(len)]
-    elif type == 'rate':
-        return [start * (term * i) for i in range(1, len + 1)]
+def write_result_csv(file_path, strings, mode='a'):
+    with open(file_path, mode) as file:
+        for i in range(len(strings)):
+            if (i == len(strings) - 1):
+                file.write(f'{strings[i]}\n')
+            else:
+                file.write(f'{strings[i]},')
 
 
 def main():
-    print('aadasd')
+    datas = ['Cora', 'Citeseer', 'Pubmed']
+
+    hyperpms = dict()
+    hyperpms['lr'] = [0.1 ** i for i in range(1, 5)]
+    hyperpms['reg'] = [0.1 ** i for i in range(1, 5)]
+
+    run_experiments(datas[0], 3, **hyperpms)
+
+    hyperpms = dict()
+    hyperpms['nlayer'] = [i for i in range(1, 7)]
+    hyperpms['dropout'] = [0.3 + i * 0.05 for i in range(7)]
+
+    run_experiments(datas[0], 3, **hyperpms)
+
+    hyperpms = dict()
+    hyperpms['ncaps'] = [4 * (2 ** i) for i in range(4)]
+    hyperpms['ndim'] = [64, 128, 256]
+
+    run_experiments(datas[0], 3, **hyperpms)
+
 
 if __name__ == "__main__":
     main()
