@@ -11,14 +11,8 @@ from models.model import DisenGCN
 
 
 class MyTrainer:
-<<<<<<< HEAD
     def __init__(self, in_dim, device='cpu'):
         self.in_dim = in_dim
-=======
-    def __init__(self, in_dim, out_dim, device='cpu'):
-        self.in_dim = in_dim
-        self.out_dim = out_dim
->>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
         self.device = device
 
     def train_model(self, dataset, hyperpm):
@@ -26,17 +20,12 @@ class MyTrainer:
         self.hyperpm = hyperpm
         epochs = hyperpm['nepoch']
 
-<<<<<<< HEAD
         model = DisenGCN(self.in_dim, dataset.get_nclass(), self.hyperpm).to(self.device)
         optimizer = torch.optim.Adam(model.parameters(), lr=hyperpm['lr'], weight_decay=hyperpm['reg'])
         # scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=optimizer,
         #                                               lr_lambda=lambda epoch: 0.95 ** epoch,
         #                                               last_epoch=-1,
         #                                               verbose=False)
-=======
-        model = DisenGCN(self.in_dim, self.out_dim, dataset.get_nclass(), self.hyperpm).to(self.device)
-        optimizer = torch.optim.Adam(model.parameters(), lr=hyperpm['lr'], weight_decay=hyperpm['reg'])
->>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
         model.train()
 
         pbar = tqdm(range(epochs), position=1, leave=False, desc='epoch')
@@ -71,10 +60,7 @@ class MyTrainer:
             #################################################
             loss.backward()
             optimizer.step()
-<<<<<<< HEAD
             # scheduler.step()
-=======
->>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
 
             pbar.write(
                 f'Epoch : {epoch + 1:02}/{epochs}    loss : {loss:.4f}    trn_acc : {trn_acc:.4f} val_acc : {val_acc:.4f}')
