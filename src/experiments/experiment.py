@@ -39,8 +39,12 @@ def run_experiments(data_name, times, **hyperpms):
     for key, value in zip(hpm_names, permutation):
         hpm[key] = value
 
+<<<<<<< HEAD
     #file_dir = f'/Volumes/GoogleDrive/.shortcut-targets-by-id/107r5K0_qzMzC2U5GN3KdxA907I9lnkmC/Geonwoo Ko/Research/DisenGCN-pytorch/src/experiments/result/'
     file_dir = f'/content/drive/.shortcut-targets-by-id/107r5K0_qzMzC2U5GN3KdxA907I9lnkmC/Geonwoo Ko/Research/DisenGCN-pytorch/src/experiments/result/'
+=======
+    file_dir = f'/Volumes/GoogleDrive/.shortcut-targets-by-id/107r5K0_qzMzC2U5GN3KdxA907I9lnkmC/Geonwoo Ko/Research/DisenGCN-pytorch/src/experiments/result/'
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
 
     file_name = ''
     for hpm_name in hpm_names:
@@ -58,9 +62,16 @@ def run_experiments(data_name, times, **hyperpms):
         accuracy = []
         Time = time.time()
         for i in range(times):
+<<<<<<< HEAD
             accuracy.append(float(m(dataname=data_name, early=10, **hpm)))
         Time = time.time() - Time
         write_result_csv(file_path, [*hpm.values(), Time, np.mean(accuracy), np.std(accuracy)])
+=======
+            accuracy.append(m(dataname=data_name, early=10, **hpm))
+        Time = time.time() - Time
+
+        write_result_csv(file_path, [*hpm.keys(), Time, np.mean(accuracy), np.std(accuracy)])
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
 
 
 def write_result_csv(file_path, strings, mode='a'):
@@ -75,14 +86,20 @@ def write_result_csv(file_path, strings, mode='a'):
 def main():
     datas = ['Cora', 'Citeseer', 'Pubmed']
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
     hyperpms = dict()
     hyperpms['lr'] = [0.1 ** i for i in range(1, 5)]
     hyperpms['reg'] = [0.1 ** i for i in range(1, 5)]
 
     run_experiments(datas[0], 3, **hyperpms)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
     hyperpms = dict()
     hyperpms['nlayer'] = [i for i in range(1, 7)]
     hyperpms['dropout'] = [0.3 + i * 0.05 for i in range(7)]
@@ -94,6 +111,7 @@ def main():
     hyperpms['nhidden'] = [8, 16, 32]
 
     run_experiments(datas[0], 3, **hyperpms)
+<<<<<<< HEAD
     
     hyperpms = dict()
     hyperpms['lr'] = [0.1 ** i for i in range(1, 5)]
@@ -133,6 +151,8 @@ def main():
 
     run_experiments(datas[2], 3, **hyperpms)
 
+=======
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
 
 
 if __name__ == "__main__":

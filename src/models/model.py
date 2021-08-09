@@ -6,9 +6,15 @@ import numpy as np
 from tqdm import tqdm
 
 
+<<<<<<< HEAD
 class DimReduceLayer(nn.Module):
     def __init__(self, in_dim, out_dim):
         super(DimReduceLayer, self).__init__()
+=======
+class SparseInputLayer(nn.Module):
+    def __init__(self, in_dim, out_dim):
+        super(SparseInputLayer, self).__init__()
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
 
         weight = torch.zeros((in_dim, out_dim), dtype=torch.float32)
         bias = torch.zeros(out_dim, dtype=torch.float32)
@@ -16,8 +22,11 @@ class DimReduceLayer(nn.Module):
         std = 1. / np.sqrt(out_dim)
         weight = nn.init.uniform_(weight, -std, std)
         bias = nn.init.uniform_(bias, -std, std)
+<<<<<<< HEAD
         #weight = nn.init.normal_(weight, 0, std)
         #bias = nn.init.normal_(bias, 0, std)
+=======
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
         self.weight, self.bias = nn.Parameter(weight), nn.Parameter(bias)
 
     def forward(self, feat):
@@ -26,14 +35,25 @@ class DimReduceLayer(nn.Module):
 
 
 class RoutingLayer(nn.Module):
+<<<<<<< HEAD
     def __init__(self, k, hyperpm):
         super(RoutingLayer, self).__init__()
         self.k = k
+=======
+    def __init__(self, hyperpm):
+        super(RoutingLayer, self).__init__()
+        self.k = hyperpm['ncaps']
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
         self.routit = hyperpm['routit']
         self.tau = hyperpm['tau']
 
     def forward(self, x, src_trg):
+<<<<<<< HEAD
         m, trg, src = src_trg.shape[1], src_trg[0], src_trg[1]
+=======
+
+        m, src, trg = src_trg.shape[1], src_trg[0], src_trg[1]
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
 
         src, trg = src.long(), trg.long()
         n, d = x.shape
@@ -56,6 +76,7 @@ class RoutingLayer(nn.Module):
             c = F.normalize(c.view(n, k, delta_d), dim=2).view(n, d)
         return c
 
+<<<<<<< HEAD
 class DisenConvLayer(nn.Module):
     def __init__(self, in_dim, out_dim, hyperpm):
         super(DisenConvLayer, self).__init__()
@@ -109,3 +130,32 @@ class DisenGCN(nn.Module):
             #x = self._dropout(F.leaky_relu(x), self.dropout)
         x = self.mlp(x)
         return F.log_softmax(x, dim=1)
+=======
+
+class DisenGCN(nn.Module):
+    def __init__(self, in_dim, out_dim, nclass, hyperpm):
+        super(DisenGCN, self).__init__()
+
+        self.in_dim = in_dim
+        self.out_dim = out_dim
+
+        self.pca = SparseInputLayer(in_dim, out_dim)
+        self.conv_ls = []
+        for i in range(hyperpm['nlayer']):
+            conv = RoutingLayer(hyperpm)
+            self.conv_ls.append(conv)
+
+        self.mlp = nn.Linear(out_dim, nclass)
+        self.dropout = hyperpm['dropout']
+
+    def forward(self, feat, src_trg_edges):
+        x = F.leaky_relu(self.pca(feat))
+        for conv in tqdm(self.conv_ls, position=0, leave=False, desc='RoutingLayer'):
+
+            x = conv(x, src_trg_edges)
+
+        x = self.mlp(x)
+
+        return F.log_softmax(x, dim=1)
+
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58

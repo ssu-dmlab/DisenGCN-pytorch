@@ -16,11 +16,21 @@ from data import DataLoader
 
 def run_model(device, hyperpm, dataset):
     in_dim = dataset.feat.shape[1]
+<<<<<<< HEAD
 
     trainer = MyTrainer(device=device,
                         in_dim=in_dim)
 
     if (hyperpm['early'] == -1):
+=======
+    out_dim = hyperpm['ncaps'] * hyperpm['nhidden']
+
+    trainer = MyTrainer(device=device,
+                        in_dim=in_dim,
+                        out_dim=out_dim)
+
+    if(hyperpm['early'] == -1):
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
         logger.info("Train model not using early-stopping.")
     else:
         logger.info("Train model using early-stopping.")
@@ -37,17 +47,28 @@ def main(datadir='datasets/',
          dataname='Cora',
          cpu=False,
          bidirect=True,
+<<<<<<< HEAD
          seed=-1,
+=======
+         seed = -1,
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
          nepoch=200,
          early=-1,
          lr=0.03,
          reg=0.036,
          dropout=0.35,
          nlayer=5,
+<<<<<<< HEAD
          init_k=8,
          delta_k=0,
          ndim=128,
          routit=6,
+=======
+         ncaps=7,
+         nhidden=16,
+         routit=6,
+         nbsz=20,
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
          tau=1.0):
     """
     :param datadir: directory of dataset
@@ -61,9 +82,14 @@ def main(datadir='datasets/',
     :param reg: Weight decay (L2 loss on parameters)
     :param drouput: Dropout rate (1 - keep probability)
     :param nlayer: Number of conv layers
+<<<<<<< HEAD
     :param init_k: Maximum number of capsules per layer
     :param delta_k: Number of hidden units per capsule
     :param ndim: Output embedding dimensions
+=======
+    :param ncaps: Maximum number of capsules per layer
+    :param nhidden: Number of hidden units per capsule
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
     :param routit: Number of iterations when routing
     :param nbsz: Size of the sampled neighborhood
     :param tau: Softmax scaling parameter
@@ -87,25 +113,42 @@ def main(datadir='datasets/',
     hyperpm['reg'] = reg
     hyperpm['dropout'] = dropout
     hyperpm['nlayer'] = nlayer
+<<<<<<< HEAD
     hyperpm['init_k'] = init_k
     hyperpm['delta_k'] = delta_k
     hyperpm['ndim'] = ndim
     hyperpm['routit'] = routit
+=======
+    hyperpm['ncaps'] = ncaps
+    hyperpm['nhidden'] = nhidden
+    hyperpm['routit'] = routit
+    hyperpm['nbsz'] = nbsz
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
     hyperpm['tau'] = tau
     log_param(hyperpm)
 
     dataset = DataLoader(data_dir=param['datadir'],
                          data_name=param['dataname'],
                          bidirection=bidirect,
+<<<<<<< HEAD
                          device=device)
+=======
+                         device = device)
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
 
     set_rng_seed(seed)
     accuracy = run_model(device=device,
                          hyperpm=hyperpm,
                          dataset=dataset)
+<<<<<<< HEAD
     logger.info(f"The model has been trained. The test accuracy is {accuracy:.4}")
 
 
+=======
+    return accuracy
+    logger.info(f"The model has been trained. The test accuracy is {accuracy:.4}")
+
+>>>>>>> 6f77d6b881540f28c3443b62d852cc57d3d6ec58
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     sys.exit(fire.Fire(main))
