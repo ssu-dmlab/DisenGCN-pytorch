@@ -6,6 +6,7 @@
    2) layer(row-wise) normalization을 통해 routingLayer의 output을 normalization
    3) 그러나 layer가 깊어지거나, dropout rate가 커지면 여전히 nan이 드물게 발생
 
+
 2) 원 논문은 각 DisenConvLayer마다 가중치를 학습시키는데, 코드에서는 처음 pca layer만 가중치를 학습
     1) routing Layer를 통과하다보면, 값이 극단적으로 되어 gradient가 exploding 하는 문제라고 추측
     2) **routing layer에도 mlp를 추가하는 모델으로 수정하여 weight를 학습**
@@ -14,7 +15,13 @@
     5) random search를 이용해 하이퍼파라미터 서치
    
 
-4) ~~Loss function이 잘 작동하지 않음(torch.nn.functional.nll_loss())~~
+3) random search를 할때, 고려해야 할 점
+   1) 완전 생 랜덤 서치는, 좋지않은 결과들만 나온다 (하이퍼 파라미터 범위를 조정)
+   2) 모델이 dropout을 적용 안하거나 적게 해야 결과가 좋음(?)
+   3) lr decay 필요 여부 / early stopping의 적용 여부 (early 수)
+
+
+5) ~~Loss function이 잘 작동하지 않음(torch.nn.functional.nll_loss())~~
    1) ~~이미 구현된 함수를 이용하면, softmax된 값들의 loss가 음수가 나옴~~
    2) ~~직접 negative log likelihood loss를 구하면 문제가 없음~~
    3) ***nll_loss는 log_softmax된 값을 인자로 취하는데, softmax된 값을 주었음***
