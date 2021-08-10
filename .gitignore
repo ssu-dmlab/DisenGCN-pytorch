@@ -8,3 +8,7 @@
 *__pycache__
 
 sbin
+
+*Icon
+
+*.ipynb
