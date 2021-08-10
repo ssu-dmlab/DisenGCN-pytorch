@@ -6,6 +6,7 @@ import numpy as np
 from tqdm import tqdm
 
 
+# Dimension Reuction Layer (k -> k - delta_k)
 class DimReduceLayer(nn.Module):
     def __init__(self, in_dim, out_dim):
         super(DimReduceLayer, self).__init__()
@@ -13,18 +14,21 @@ class DimReduceLayer(nn.Module):
         weight = torch.zeros((in_dim, out_dim), dtype=torch.float32)
         bias = torch.zeros(out_dim, dtype=torch.float32)
 
+        # Parameter initialize
         std = 1. / np.sqrt(out_dim)
         weight = nn.init.uniform_(weight, -std, std)
         bias = nn.init.uniform_(bias, -std, std)
-        #weight = nn.init.normal_(weight, 0, std)
-        #bias = nn.init.normal_(bias, 0, std)
+
+        # weight = nn.init.normal_(weight, 0, std)
+        # bias = nn.init.normal_(bias, 0, std)
+
         self.weight, self.bias = nn.Parameter(weight), nn.Parameter(bias)
 
     def forward(self, feat):
-        # mm은 broadcasting X
         return torch.mm(feat, self.weight) + self.bias
 
 
+# Make Disentangled features
 class RoutingLayer(nn.Module):
     def __init__(self, k, hyperpm):
         super(RoutingLayer, self).__init__()
@@ -56,6 +60,8 @@ class RoutingLayer(nn.Module):
             c = F.normalize(c.view(n, k, delta_d), dim=2).view(n, d)
         return c
 
+
+# DimReduction Layer + Routing Layer
 class DisenConvLayer(nn.Module):
     def __init__(self, in_dim, out_dim, hyperpm):
         super(DisenConvLayer, self).__init__()
@@ -63,16 +69,13 @@ class DisenConvLayer(nn.Module):
         self.k = out_dim // (hyperpm['ndim'] // hyperpm['init_k'])
         self.pca = DimReduceLayer(in_dim, out_dim)
         self.rout = RoutingLayer(self.k, hyperpm)
-        self.dropout = hyperpm['dropout']
-
-    def _dropout(self, x):
-        return F.dropout(x, self.dropout, training = self.training)
 
     def forward(self, x, src_trg):
         x = F.leaky_relu(self.pca(x))
-        x = F.normalize(x.view(x.shape[0], self.k, -1), dim = 2).view(x.shape[0],-1)
-        x = self.rout(x,src_trg)
-        return self._dropout(F.leaky_relu(x))
+        x = F.normalize(x.view(x.shape[0], self.k, -1), dim=2).view(x.shape[0], -1)
+        x = self.rout(x, src_trg)
+        return x
+
 
 class DisenGCN(nn.Module):
     def __init__(self, in_dim, nclass, hyperpm):
@@ -89,7 +92,6 @@ class DisenGCN(nn.Module):
         for i in range(hyperpm['nlayer']):
             k -= hyperpm['delta_k']
             out_dim = k * d
-            print(f'out_dim = {out_dim}')
             conv_ls.append(DisenConvLayer(in_dim, out_dim, hyperpm))
             in_dim = out_dim
 
@@ -98,14 +100,11 @@ class DisenGCN(nn.Module):
         self.mlp = nn.Linear(in_dim, nclass)
 
     def _dropout(self, x, dropout):
-        return F.dropout(x, dropout, training = self.training)
+        return F.dropout(x, dropout, training=self.training)
 
     def forward(self, feat, src_trg_edges):
-        x = self.pca(feat)
-        x = F.leaky_relu(x)
-        #x = self._dropout(F.leaky_relu(x), self.dropout)
+        x = F.leaky_relu(self.pca(feat))
         for conv in tqdm(self.conv_ls, position=0, leave=False, desc='RoutingLayer'):
-            x = conv(x, src_trg_edges)
-            #x = self._dropout(F.leaky_relu(x), self.dropout)
+            x = self._dropout(conv(x, src_trg_edges), self.dropout)
         x = self.mlp(x)
         return F.log_softmax(x, dim=1)
