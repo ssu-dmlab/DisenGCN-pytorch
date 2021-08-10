@@ -9,9 +9,9 @@
 
 2) 원 논문은 각 DisenConvLayer마다 가중치를 학습시키는데, 코드에서는 처음 pca layer만 가중치를 학습
     1) routing Layer를 통과하다보면, 값이 극단적으로 되어 gradient가 exploding 하는 문제라고 추측
-    2) **routing layer에도 mlp를 추가하는 모델으로 수정하여 weight를 학습**
+    2) **모델으로 수정하여 각각의 routing Layer에 fc layer를 두어 weight를 학습**
     3) 추가적으로 delta_k를 두어, initial embedding dim(128)에서 k를 줄여 dim을 줄여나감
-    4) nan이 발생하지 않음, 그러나 하이퍼파라미터가 코드의 디폴트값으로 적용하면 결과가 좋지 않음.
+    4) 새로운 모델은 nan이 발생하지 않음, 그러나 하이퍼파라미터가 코드의 디폴트값으로 적용하면 결과가 좋지 않음.
     5) random search를 이용해 하이퍼파라미터 서치
    
 
