@@ -1,48 +1,30 @@
 # DisenGCN-pytorch
-## 1. Citation 데이터는 Directed Graph   
-    만약 Directed Graph로 처리한다면, 최근에 쓰여진 논문(인용횟수가 적음)은 neighbor가 없기 때문에 초기 피쳐를 그대로 가져감  
-    그래서 'bidirection'을 추가해서 edge를 양방향으로 만듬
 
-## 2. Effect about neighborhood Sampling   
-    초기 구현 방식은 matrix vectorization을 위해 같은 neighbor Degree를 맞춰줌(sample number).
-    만약 어떤 노드의 neighbor Degree가 sample 개수보다 작다면, expand(해당 이웃들의 영향이 과적합될 가능성)
-    또한 random sampling이므로, 특정 이웃의 영향이 무시될 가능성도 존재하다.
-    따라서 전체 이웃을 다 고려할 수 있는 구현 방식으로 변환(routing Layer)
+## 1. 해결되지 않은 문제   
+1) pca layer(SparseInputLayer)의 parameter(gradient)가 nan이 되는 문제 
+   1) activation function을 relu -> leaky_relu로 변환, nan이 거의 발생하지 않음.
+   2) layer(row-wise) normalization을 통해 routingLayer의 output을 normalization
+   3) 그러나 layer가 깊어지거나, dropout rate가 커지면 여전히 nan이 드물게 발생
 
-## 3. 해결되지 않은 문제   
-1) pca layer(SparseInputLayer)의 parameter가 nan이 되는 문제   
-   1) epoch를 돌리다보면, pca layer의 parameter가 nan이 됨, lr을 줄여봐도 동일한 현상  
-      1) pca후 relu를 leaky_relu로 변경하니 잘 돌아감... 원인은 못 찾음
+2) 원 논문은 각 DisenConvLayer마다 가중치를 학습시키는데, 코드에서는 처음 pca layer만 가중치를 학습
+    1) routing Layer를 통과하다보면, 값이 극단적으로 되어 gradient가 exploding 하는 문제라고 추측
+    2) **routing layer에도 mlp를 추가하는 모델으로 수정하여 weight를 학습**
+    3) 추가적으로 delta_k를 두어, initial embedding dim(128)에서 k를 줄여 dim을 줄여나감
+    4) nan이 발생하지 않음, 그러나 하이퍼파라미터가 코드의 디폴트값으로 적용하면 결과가 좋지 않음.
+    5) random search를 이용해 하이퍼파라미터 서치
+   
 
-2) Citeseer 데이터는 노드의 개수와 test_idx의 최댓값이 다름.
-   1) 데이터 전처리 과정에서 tst_idx에는 없는 idx들은 0으로 맞춰줘야함
-
-3) Loss function이 잘 작동하지 않음(torch.nn.functional.nll_loss())
-   1) 이미 구현된 함수를 이용하면, softmax된 값들의 loss가 음수가 나오는 이상한 상황...
-   2) 직접 negative log likelihood loss를 구하면 문제가 없음
-
-4) src_trg_edges가 tensor에서 ndarray로 바뀌는 문제
-   1) tonumpy로 바꿔주는 코드가 없는데 어느순간 타입이 바뀜 
+4) ~~Loss function이 잘 작동하지 않음(torch.nn.functional.nll_loss())~~
+   1) ~~이미 구현된 함수를 이용하면, softmax된 값들의 loss가 음수가 나옴~~
+   2) ~~직접 negative log likelihood loss를 구하면 문제가 없음~~
+   3) ***nll_loss는 log_softmax된 값을 인자로 취하는데, softmax된 값을 주었음***
 
 
+3) ~~src_trg_edges가 tensor에서 ndarray로 바뀌는 문제~~
+   1) ~~tonumpy로 바꿔주는 코드가 없는데 어느순간 타입이 바뀜~~
+   2) ***데이터 전처리 코드를 모두 data.py에 옮겼더니 문제가 발생하지 않음***
 
-'''   
-    :param datadir: directory of dataset   
-    :param dataname: name of the dataset   
-    :param cpu: Insist on using CPU instead of CUDA   
-    :param bidirect : Use graph as undirected   
-    :param nepoch: Max number of epochs to train   
-    :param early: Extra iterations before early-stopping(default : -1; not using early-stopping)   
-    :param lr: Initial learning rate   
-    :param reg: Weight decay (L2 loss on parameters)   
-    :param drouput: Dropout rate (1 - keep probability)     
-    :param nlayer: Number of conv layers   
-    :param ncaps: Maximum number of capsules per layer   
-    :param nhidden: Number of hidden units per capsule   
-    :param routit: Number of iterations when routing   
-    :param nbsz: Size of the sampled neighborhood   
-    :param tau: Softmax scaling parameter   
-'''
+   
 
 [paper](https://jianxinma.github.io/assets/DisenGCN.pdf)   
 [raw code](https://jianxinma.github.io/assets/DisenGCN-py3.zip)
