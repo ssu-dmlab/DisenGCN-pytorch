@@ -22,10 +22,10 @@ class MyTrainer:
 
         model = DisenGCN(self.in_dim, dataset.get_nclass(), self.hyperpm).to(self.device)
         optimizer = torch.optim.Adam(model.parameters(), lr=hyperpm['lr'], weight_decay=hyperpm['reg'])
-        # scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=optimizer,
-        #                                               lr_lambda=lambda epoch: 0.95 ** epoch,
-        #                                               last_epoch=-1,
-        #                                               verbose=False)
+
+        #learning rate decay
+        # scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer=optimizer, lr_lambda=lambda epoch: 0.95 ** epoch, last_epoch=-1, verbose=False)
+
         model.train()
 
         pbar = tqdm(range(epochs), position=1, leave=False, desc='epoch')
@@ -51,13 +51,6 @@ class MyTrainer:
                 early_count += 1
 
             loss = F.nll_loss(pred_prob[trn_idx], targ[trn_idx])
-            #loss = -torch.log(pred_prob[(range(len(trn_idx)), targ[trn_idx])]).sum()
-            #################debugging#######################
-            # if(True):
-            #     for name, param in model.named_parameters():
-            #         if(name[0:3] == 'pca'):
-            #             print(name, param)
-            #################################################
             loss.backward()
             optimizer.step()
             # scheduler.step()
