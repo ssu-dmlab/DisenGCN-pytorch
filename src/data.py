@@ -11,6 +11,15 @@ from utils import sprs_torch_from_scipy
 
 class DataLoader:
     def __init__(self, data_dir='datasets/', data_name='Cora', bidirection=True, device='cpu'):
+        """
+        Split train, validation, test index and make whole feature about vertices
+        Make src_trg_edges which is edges matrix transposed
+        :param data_dir:
+        :param data_name:
+        :param bidirection: Doubling directed edges to bidirected edges
+        :param device:
+        """
+
         self.device = device
         data_tmp = []
         data_path = os.path.join(data_dir, data_name, f'raw/ind.{data_name.lower()}.')
