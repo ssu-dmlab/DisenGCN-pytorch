@@ -62,6 +62,7 @@ class DataLoader:
         self.graph, self.src_trg_edges, self.feat, self.targ = graph, src_trg_edges, feat, targ
         self.nclass = c
 
+
     def get_idx(self):
         return self.trn_idx, self.val_idx, self.tst_idx
 
