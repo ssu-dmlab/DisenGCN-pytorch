@@ -99,6 +99,7 @@ def main(datadir='datasets/',
                          bidirection=bidirect,
                          device=device)
 
+
     set_rng_seed(seed)
     accuracy = run_model(device=device,
                          hyperpm=hyperpm,
