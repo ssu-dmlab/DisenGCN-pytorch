@@ -14,18 +14,18 @@ from models.eval import MyEvaluator
 from data import DataLoader
 
 
-def run_model(device, hyperpm, dataset):
+def run_model(device, hyperpm, dataset, verbose):
     in_dim = dataset.feat.shape[1]
 
     trainer = MyTrainer(device=device,
                         in_dim=in_dim)
 
     if (hyperpm['early'] == -1):
-        logger.info("Train model not using early-stopping.")
+        logger.info("Train model without early-stopping.")
     else:
-        logger.info("Train model using early-stopping.")
+        logger.info("Train model with early-stopping.")
 
-    model = trainer.train_model(dataset=dataset, hyperpm=hyperpm)
+    model = trainer.train_model(dataset=dataset, hyperpm=hyperpm, verbose=verbose)
 
     evaluator = MyEvaluator(device=device)
     accuracy = evaluator.evaluate(model, dataset)
@@ -35,15 +35,16 @@ def run_model(device, hyperpm, dataset):
 
 def main(datadir='datasets/',
          dataname='Cora',
+         verbose=True,
          cpu=False,
          bidirect=True,
          seed=-1,
-         nepoch=200,
+         nepoch=100,
          early=-1,
          lr=0.03,
          reg=0.036,
          dropout=0.35,
-         nlayer=5,
+         nlayer=4,
          init_k=8,
          delta_k=0,
          ndim=128,
@@ -68,6 +69,9 @@ def main(datadir='datasets/',
     :param nbsz: Size of the sampled neighborhood
     :param tau: Softmax scaling parameter
     """
+
+    if not verbose:
+        logger.stop()
 
     logger.info("The main procedure has started with the following parameters:")
     device = 'cuda' if (torch.cuda.is_available() and not cpu) else 'cpu'
@@ -103,10 +107,13 @@ def main(datadir='datasets/',
     set_rng_seed(seed)
     accuracy = run_model(device=device,
                          hyperpm=hyperpm,
-                         dataset=dataset)
-    logger.info(f"The model has been trained. The test accuracy is {accuracy:.4}")
+                         dataset=dataset,
+                         verbose=verbose)
 
+
+    logger.info(f"The model has been trained. The test accuracy is {accuracy:.4}")
+    return accuracy.item()
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    sys.exit(fire.Fire(main))
+    fire.Fire(main)

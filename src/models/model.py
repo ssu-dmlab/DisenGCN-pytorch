@@ -78,10 +78,11 @@ class DisenConvLayer(nn.Module):
 
 
 class DisenGCN(nn.Module):
-    def __init__(self, in_dim, nclass, hyperpm):
+    def __init__(self, in_dim, nclass, hyperpm, verbose):
         super(DisenGCN, self).__init__()
 
         self.pca = DimReduceLayer(in_dim, hyperpm['ndim'])
+        self.verbose = verbose
 
         k = hyperpm['init_k']
         d = hyperpm['ndim'] // hyperpm['init_k']
@@ -104,7 +105,7 @@ class DisenGCN(nn.Module):
 
     def forward(self, feat, src_trg_edges):
         x = F.leaky_relu(self.pca(feat))
-        for conv in tqdm(self.conv_ls, position=0, leave=False, desc='RoutingLayer'):
+        for conv in tqdm(self.conv_ls, position=0, leave=False, desc='RoutingLayer', disable=not self.verbose):
             x = self._dropout(conv(x, src_trg_edges), self.dropout)
         x = self.mlp(x)
         return F.log_softmax(x, dim=1)

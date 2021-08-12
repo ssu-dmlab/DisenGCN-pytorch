@@ -15,12 +15,13 @@ class MyTrainer:
         self.in_dim = in_dim
         self.device = device
 
-    def train_model(self, dataset, hyperpm):
+    def train_model(self, dataset, hyperpm, verbose):
         torch.autograd.set_detect_anomaly(True)
+
         self.hyperpm = hyperpm
         epochs = hyperpm['nepoch']
 
-        model = DisenGCN(self.in_dim, dataset.get_nclass(), self.hyperpm).to(self.device)
+        model = DisenGCN(self.in_dim, dataset.get_nclass(), self.hyperpm, verbose).to(self.device)
         optimizer = torch.optim.Adam(model.parameters(), lr=hyperpm['lr'], weight_decay=hyperpm['reg'])
 
         #learning rate decay
@@ -28,7 +29,7 @@ class MyTrainer:
 
         model.train()
 
-        pbar = tqdm(range(epochs), position=1, leave=False, desc='epoch')
+        pbar = tqdm(range(epochs), position=1, leave=False, desc='epoch', disable=not verbose)
         early_count, best_acc, best_model = 0, 0, None
 
         trn_idx, val_idx, tst_idx = dataset.get_idx()
@@ -54,10 +55,10 @@ class MyTrainer:
             loss.backward()
             optimizer.step()
             # scheduler.step()
-
-            pbar.write(
-                f'Epoch : {epoch + 1:02}/{epochs}    loss : {loss:.4f}    trn_acc : {trn_acc:.4f} val_acc : {val_acc:.4f}')
-            pbar.update()
+            if verbose:
+                pbar.write(
+                    f'Epoch : {epoch + 1:02}/{epochs}    loss : {loss:.4f}    trn_acc : {trn_acc:.4f} val_acc : {val_acc:.4f}')
+                pbar.update()
 
             if (early_count == hyperpm['early']):
                 break
