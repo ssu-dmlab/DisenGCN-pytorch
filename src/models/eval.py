@@ -5,16 +5,15 @@ class MyEvaluator:
     def __init__(self, device):
         self.device = device
 
-    def evaluate(self, model, dataset):
+    def evaluate(self, model, dataset, eval_idx):
         with torch.no_grad():
             model.eval()
             _, feat, targ = dataset.get_graph_feat_targ()
             src_trg = dataset.get_src_trg_edges()
-            _, _, tst_idx = dataset.get_idx()
 
-            tst_pred_prob = model(feat, src_trg)[tst_idx]
-            tst_pred_label = torch.argmax(tst_pred_prob, dim = 1)
-            tst_acc = (tst_pred_label == targ[tst_idx]).sum() / len(tst_idx)
+            eval_pred_prob = model(feat, src_trg)[eval_idx]
+            eval_pred_label = torch.argmax(eval_pred_prob, dim = 1)
+            eval_acc = (eval_pred_label == targ[eval_idx]).sum() / len(eval_idx)
 
 
-            return tst_acc
+            return eval_acc
