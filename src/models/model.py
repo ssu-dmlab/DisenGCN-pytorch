@@ -15,12 +15,12 @@ class DimReduceLayer(nn.Module):
         bias = torch.zeros(out_dim, dtype=torch.float32)
 
         # Parameter initialize
-        std = 1. / np.sqrt(out_dim)
-        weight = nn.init.uniform_(weight, -std, std)
-        bias = nn.init.uniform_(bias, -std, std)
+        weight = nn.init.xavier_uniform_(weight)
 
-        # weight = nn.init.normal_(weight, 0, std)
-        # bias = nn.init.normal_(bias, 0, std)
+        # std = 1. / np.sqrt(out_dim)
+        # weight = nn.init.uniform_(weight, -std, std)
+        # bias = nn.init.uniform_(bias, -std, std)
+
 
         self.weight, self.bias = nn.Parameter(weight), nn.Parameter(bias)
 
@@ -93,10 +93,11 @@ class DisenGCN(nn.Module):
         for i in range(hyperpm['nlayer']):
             k -= hyperpm['delta_k']
             out_dim = k * d
-            conv_ls.append(DisenConvLayer(in_dim, out_dim, hyperpm))
+            conv = DisenConvLayer(in_dim, out_dim, hyperpm)
+            conv_ls.append(conv)
             in_dim = out_dim
 
-        self.conv_ls = conv_ls
+        self.conv_ls = nn.ModuleList(conv_ls)
         self.dropout = hyperpm['dropout']
         self.mlp = nn.Linear(in_dim, nclass)
 
@@ -105,7 +106,7 @@ class DisenGCN(nn.Module):
 
     def forward(self, feat, src_trg_edges):
         x = F.leaky_relu(self.pca(feat))
-        for conv in tqdm(self.conv_ls, position=0, leave=False, desc='RoutingLayer', disable=not self.verbose):
+        for conv in tqdm(self.conv_ls, position=0, leave=False, desc='RoutingLayer', disable=not self.verbose or not self.training):
             x = self._dropout(conv(x, src_trg_edges), self.dropout)
         x = self.mlp(x)
         return F.log_softmax(x, dim=1)
