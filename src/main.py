@@ -28,7 +28,9 @@ def run_model(device, hyperpm, dataset, verbose):
     model = trainer.train_model(dataset=dataset, hyperpm=hyperpm, verbose=verbose)
 
     evaluator = MyEvaluator(device=device)
-    accuracy = evaluator.evaluate(model, dataset)
+
+    _, _, tst_idx = dataset.get_idx()
+    accuracy = evaluator.evaluate(model, dataset, tst_idx)
 
     return accuracy
 
@@ -39,15 +41,15 @@ def main(datadir='datasets/',
          cpu=False,
          bidirect=True,
          seed=-1,
-         nepoch=100,
+         nepoch=200,
          early=-1,
-         lr=0.03,
+         lr=0.001,
          reg=0.036,
          dropout=0.35,
          nlayer=4,
          init_k=8,
          delta_k=0,
-         ndim=128,
+         ndim=64,
          routit=6,
          tau=1.0):
     """
@@ -103,16 +105,17 @@ def main(datadir='datasets/',
                          bidirection=bidirect,
                          device=device)
 
+    if (seed != -1):
+        set_rng_seed(seed)
 
-    set_rng_seed(seed)
     accuracy = run_model(device=device,
                          hyperpm=hyperpm,
                          dataset=dataset,
                          verbose=verbose)
 
-
     logger.info(f"The model has been trained. The test accuracy is {accuracy:.4}")
     return accuracy.item()
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
