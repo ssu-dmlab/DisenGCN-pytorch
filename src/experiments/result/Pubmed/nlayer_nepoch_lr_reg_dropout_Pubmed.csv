@@ -1,0 +1,2 @@
+nlayer,nepoch,lr,reg,dropout,time,accuracy_mean,accuracy_std
+4,300,0.001,0.15,0.5,1099.1543715000153,0.40700000524520874,0.0

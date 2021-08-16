@@ -61,7 +61,7 @@ class MyTrainer:
                     f'Epoch : {epoch + 1:02}/{epochs}    loss : {loss:.4f}    trn_acc : {trn_acc:.4f} val_acc : {val_acc:.4f}')
                 pbar.update()
 
-            if (early_count == hyperpm['early']):
+            if (hyperpm['early'] != None and early_count == hyperpm['early']):
                 break
 
         model.load_state_dict(best_model)

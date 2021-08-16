@@ -21,7 +21,8 @@ def log_param(param):
             for in_key, in_value in value.items():
                 logger.info(f'{in_key:20}:{in_value:>50}')
         else:
-            logger.info(f'{key:20}:{value:>50}')
+            if(value != None):
+                logger.info(f'{key:20}:{value:>50}')
 
 
 def sprs_torch_from_scipy(x):

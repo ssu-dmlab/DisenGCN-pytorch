@@ -40,9 +40,9 @@ def main(datadir='datasets/',
          verbose=True,
          cpu=False,
          bidirect=True,
-         seed=-1,
+         seed=None,
          nepoch=200,
-         early=-1,
+         early=None,
          lr=0.001,
          reg=0.036,
          dropout=0.35,
@@ -105,7 +105,7 @@ def main(datadir='datasets/',
                          bidirection=bidirect,
                          device=device)
 
-    if (seed != -1):
+    if (seed != None):
         set_rng_seed(seed)
 
     accuracy = run_model(device=device,
