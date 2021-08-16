@@ -1,7 +1,7 @@
 # DisenGCN-pytorch
 
 This is python implementation of **Disen**tanlged **G**raph **C**onvolutional **N**etwork.      
-[(DisenGCN)]((https://jianxinma.github.io/assets/DisenGCN.pdf)  )    
+[(DisenGCN)](https://jianxinma.github.io/assets/DisenGCN.pdf)    
 
 
 ## Installation
