@@ -7,8 +7,6 @@ from loguru import logger
 
 
 def set_rng_seed(seed):
-    if (seed == -1):
-        seed = int(time.time())
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
