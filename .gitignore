@@ -15,4 +15,4 @@ sbin
 
 *.ini
 
-./experiments*
+./src/experiments*
