@@ -12,3 +12,7 @@ sbin
 *Icon
 
 *.ipynb
+
+*.ini
+
+./experiments*
