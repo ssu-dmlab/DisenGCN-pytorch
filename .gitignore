@@ -14,5 +14,3 @@ sbin
 *.ipynb
 
 *.ini
-
-./src/experiments*
