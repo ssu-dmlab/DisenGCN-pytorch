@@ -1,6 +1,6 @@
 # DisenGCN-pytorch
 
-This is python implementation of **Disen**tanlged **G**raph **C**onvolutional **N**etwork.
+This is python implementation of **Disen**tanlged **G**raph **C**onvolutional **N**etwork.   
 This code only implements single node classification task.    
 [(DisenGCN)](https://jianxinma.github.io/assets/DisenGCN.pdf)    
 
