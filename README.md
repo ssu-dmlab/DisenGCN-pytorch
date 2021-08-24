@@ -55,10 +55,10 @@ We summarize the input arguments of `DisenGCN` in the following table:
 | `seed` | Random seed about model | `None`|
 | `nepoch` | Max Number of epochs to train | `200`|
 | `early` | Extra iterations before early-stopping | `None`|
-| `lr` | Learning Rate | `1e-3`|
-| `reg` | L2 Regularization(weight decay) rate  | `3e-2`|
-| `dropout` | Dropout rate ( 1 - keep probability) | `0.35`|
-| `nlayer` | Number of hidden(DisenConv) layers | `4`|
+| `lr` | Learning Rate | `0.03`|
+| `reg` | L2 Regularization(weight decay) rate  | `0.0036`|
+| `dropout` | Dropout rate ( 1 - keep probability) | `0.2`|
+| `nlayer` | Number of hidden(DisenConv) layers | `5`|
 | `init_k` | Initial number of channel in conv layer | `8`|
 | `ndim` | Initial Embedding Dimention (First hidden layer input dim) | `64`|
 | `routit` | Number of iterations in routing | `6` |
