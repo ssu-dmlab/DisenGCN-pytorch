@@ -14,10 +14,6 @@ class DataLoader:
         """
         Split train, validation, test index and make whole feature about vertices
         Make src_trg_edges which is edges matrix transposed
-        :param data_dir:
-        :param data_name:
-        :param bidirection: Doubling directed edges to bidirected edges
-        :param device:
         """
 
         self.device = device
@@ -53,7 +49,7 @@ class DataLoader:
         targ[trn_idx, :] = y
         targ[val_idx, :] = ally[val_idx, :]
         targ[tst_idx, :] = ty
-        # one-hot encoding -> label number
+
         label = np.argwhere(targ == 1)
         targ = np.zeros(n)
         targ[label[:, 0]] = label[:, 1]
@@ -61,16 +57,22 @@ class DataLoader:
         logger.info(f'Dataset: {data_name}  Dim: #node X #feature ~ #class = {n} X {d} ~ {c}')
 
         edges = np.array(graph.edges)
+
+        # make bidirected edges from directed edges
         if bidirection:
             fun = lambda x: (x[1], x[0])
             reverse_edges = np.apply_along_axis(fun, 1, edges)
             edges = np.concatenate((edges, reverse_edges), axis=0)
-        src_trg_edges = torch.from_numpy(np.transpose(edges)).to(self.device)
+
+        # add self edges
+        src_trg_edges = np.transpose(edges)
+        self_edges = np.array([graph.nodes, graph.nodes])
+        src_trg_edges = torch.from_numpy(np.concatenate((src_trg_edges, self_edges), 1)).long()
+        src_trg_edges = src_trg_edges[:, np.argsort(src_trg_edges[1])].to(self.device)
 
         self.trn_idx, self.tst_idx, self.val_idx = trn_idx, tst_idx, val_idx
         self.graph, self.src_trg_edges, self.feat, self.targ = graph, src_trg_edges, feat, targ
         self.nclass = c
-
 
     def get_idx(self):
         return self.trn_idx, self.val_idx, self.tst_idx
