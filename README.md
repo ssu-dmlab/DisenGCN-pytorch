@@ -56,7 +56,7 @@ We summarize the input arguments of `DisenGCN` in the following table:
 | `nepoch` | Max Number of epochs to train | `200`|
 | `early` | Extra iterations before early-stopping | `None`|
 | `lr` | Learning Rate | `0.03`|
-| `reg` | L2 Regularization(weight decay) rate  | `0.0036`|
+| `reg` | L2 Regularization(weight decay) rate  | `0.003`|
 | `dropout` | Dropout rate ( 1 - keep probability) | `0.2`|
 | `nlayer` | Number of hidden(DisenConv) layers | `5`|
 | `init_k` | Initial number of channel in conv layer | `8`|
