@@ -60,7 +60,8 @@ We summarize the input arguments of `DisenGCN` in the following table:
 | `ndim` | Initial Embedding Dimention (First hidden layer input dim) | `64`|
 | `routit` | Number of iterations in routing | `6` |
 
-##Experiments
+
+## Experiments
 ### - Single node classification(semi-supervised learning)   
 
 
