@@ -1,13 +1,11 @@
 # DisenGCN-pytorch
-This is python implementation of **Disen**tanlged **G**raph **C**onvolutional **N**etwork.   
-This code only implements single node classification task.    
-[(DisenGCN)](https://jianxinma.github.io/assets/DisenGCN.pdf)    
 
-## Neighborhood Sampling
-Raw code must use neighbor sampling, but this implementation doesn't use that.  
-This code is likely to make embeddings by reflecting every neighbors' effects.
+This repository aims to reproduce **DisenGCN** proposed in "Disentangled graph convolutional networks (ICML 2019)". 
+We refer to the original code [(link)](https://jianxinma.github.io/assets/DisenGCN-py3.zip) to implement **DisenGCN** on semi-supervised node classification task. 
 
-## Installation
+## Dependencies
+We use the following Python packages to implement this. 
+
 * networkx==2.6.2
 * torch==1.9.0
 * loguru==0.5.3
@@ -16,7 +14,7 @@ This code is likely to make embeddings by reflecting every neighbors' effects.
 * tqdm==4.61.2
 * numpy==1.21.1  
 
-To install this package, write this on your terminal.
+To install the above packages, type the following on your terminal:
 ```bash
 pip3 install -r requirements.txt
 ```
@@ -61,6 +59,11 @@ We summarize the input arguments of `DisenGCN` in the following table:
 | `routit` | Number of iterations in routing | `6` |
 
 
+## Neighborhood Sampling
+Raw code must use neighbor sampling, but this implementation doesn't use that.  
+This code is likely to make embeddings by reflecting every neighbors' effects.
+
+
 ## Experiments
 ### - Single node classification(semi-supervised learning)   
 
@@ -88,3 +91,6 @@ The results are here.
 
 [paper](https://jianxinma.github.io/assets/DisenGCN.pdf)   
 [raw code](https://jianxinma.github.io/assets/DisenGCN-py3.zip)
+
+## References 
+[1] Ma, J., Cui, P., Kuang, K., Wang, X., & Zhu, W. (2019, May). Disentangled graph convolutional networks. In International Conference on Machine Learning (pp. 4212-4221). PMLR.
