@@ -56,9 +56,8 @@ python3 -m src.main \
 | `routit` | Number of iterations in routing | `6` |
 
 
-## Neighborhood Sampling
-Raw code must use neighbor sampling, but this implementation doesn't use that.  
-This code is likely to make embeddings by reflecting every neighbors' effects.
+## Notes on neighborhood sampling
+The original code uses neighborhood sampling to collect data fed into the model and make it its training phase fast, but our implmentation does not use the sampling technique. 
 
 
 ## Evaluation results
