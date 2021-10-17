@@ -57,7 +57,7 @@ python3 -m src.main \
 
 
 ## Notes on neighborhood sampling
-The original code uses neighborhood sampling to collect data fed into the model and make it its training phase fast, but our implmentation does not use the sampling technique. 
+The original code uses neighborhood sampling to make the tensor computation easier, but our implmentation does not use the sampling technique. 
 
 
 ## Evaluation results
