@@ -57,7 +57,8 @@ python3 -m src.main \
 
 
 ## Notes on neighborhood sampling
-The original code uses neighborhood sampling to make the tensor computation easier, but our implmentation does not use the sampling technique. 
+The original code uses neighborhood sampling to make the tensor parallelization easier, but our implmentation does not use the sampling technique.  
+However, our implementation is likely to know the influence of all neighbors.
 
 
 ## Evaluation results
