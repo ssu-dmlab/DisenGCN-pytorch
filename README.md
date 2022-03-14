@@ -3,6 +3,9 @@
 This repository aims to reproduce **DisenGCN** proposed in "Disentangled graph convolutional networks (ICML 2019)". 
 We refer to the original code [(link)](https://jianxinma.github.io/assets/DisenGCN-py3.zip) to implement **DisenGCN** on semi-supervised node classification task. 
 
+This repository is developed by [Geonwoo Ko](https://github.com/geonwooko), and commented by [Jinhong Jung](https://jinhongjung.github.io/).
+
+
 ## Dependencies
 We use the following Python packages to implement this. 
 
