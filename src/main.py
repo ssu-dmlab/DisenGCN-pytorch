@@ -53,7 +53,7 @@ def main(datadir='datasets/',
     :param dropout: Dropout rate (1 - keep probability)
     :param num_layers: Number of conv layers
     :param init_k: Maximum number of capsules 
-    :param delta_k: difference of number of capsules per each layer
+    :param delta_k: Difference in the number of capsules per layer
     :param hid_dim: Output embedding dimensions
     :param routit: Number of iterations when routing
     :param tau: Softmax temperature

@@ -29,34 +29,36 @@ You can run this project to simply type the following in your terminal:
 python3 -m src.main \
         --datadir ··· \
         --dataname ··· \
-        --bidirect ··· \
         --seed ··· \
         --nepoch ··· \
         --early ··· \
         --lr ··· \
         --reg ··· \
         --dropout ··· \
-        --nlayer ··· \
+        --num_layers ··· \
         --init_k ··· \
-        --ndim ··· \
+        --delta_k ··· \
+        --hid_dim ··· \
         --routit ··· \
+        --tau ··· \
 ```
 
 | Arguments     | Explanation       | Default       | 
 | --------------|-------------------|:-------------:|
 | `datadir` | Directory of dataset | `./datasets/` |
 | `dataname` | Dataset name (Cora / Citeseer / Pubmed) | `Cora`|
-| `bidirect` | Make directed edges to bidirect edges | `True`|
 | `seed` | Random seed about model | `None`|
 | `nepoch` | Maximum number of epochs to train | `200`|
 | `early` | Extra iterations before early-stopping | `None`|
 | `lr` | Learning rate | `0.03`|
 | `reg` | L2 Regularization (weight decay) rate  | `0.003`|
 | `dropout` | Dropout rate (1 - keep probability) | `0.2`|
-| `nlayer` | Number of hidden (DisenConv) layers | `5`|
+| `num_layers` | Number of hidden (DisenConv) layers | `5`|
 | `init_k` | Initial number of channels in conv layer | `8`|
-| `ndim` | Initial embedding dimention (first hidden layer input dim) | `64`|
+| `delta_k` | Difference in the number of capsules per layer
+| `hid_dim` | Initial embedding dimention | `64`|
 | `routit` | Number of iterations in routing | `6` |
+| `tau` | Softmax temperature | `1` |
 
 
 ## Notes on neighborhood sampling
@@ -65,7 +67,7 @@ The original code uses neighborhood sampling to make the tensor parallelization 
 
 ## Evaluation results
 We have tested our repository on the semi-supervised (single label) node classification. 
-For each dataset, we use the following values in the table for `lr`, `reg`, `dropout`, and `nlayer`. 
+For each dataset, we use the following values in the table for `lr`, `reg`, `dropout`, and `num_layers`. 
 For the other hyperparameters, we use default values as above. 
 
 | Hyperparameters |   Cora    | Citeseer   |    Pubmed   |
@@ -73,7 +75,7 @@ For the other hyperparameters, we use default values as above.
 |     lr         |    0.04  |     0.02    |      0.03   |
 |     reg        |    0.004 |  0.006      |      0.02   |
 |     dropout    |    0.45  |   0.2       |      0.05   |
-|     nlayer     |     2    |    6        |      5      |
+|     num_layers     |     2    |    6        |      5      |
  
 
 We summarize average accuracies with their standard deviations of 10 runs in the following table, and compare them to the results reported in the original paper. 
