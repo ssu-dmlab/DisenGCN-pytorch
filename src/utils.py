@@ -49,4 +49,4 @@ def plot_show(acc_list, tst_accuracy):
              label='validation')
     plt.scatter(x[-1], tst_accuracy, color='r', label='test')
     plt.legend()
-    plt.show()
+    plt.savefig('result.png')

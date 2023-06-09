@@ -9,7 +9,7 @@ class MyEvaluator:
     def evaluate(self, model, dataset, eval_idx):
         with torch.no_grad():
             model.eval()
-            _, feat, targ = dataset.get_graph_feat_targ()
+            feat, targ = dataset.get_feat_targ()
             src_trg = dataset.get_src_trg_edges()
 
             eval_pred_prob = model(feat, src_trg)[eval_idx]

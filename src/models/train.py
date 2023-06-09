@@ -9,31 +9,30 @@ from loguru import logger
 
 
 class MyTrainer:
-    def __init__(self, in_dim, device='cpu'):
-        self.in_dim = in_dim
+    def __init__(self, device='cpu'):
         self.device = device
         self.evaluator = MyEvaluator(device)
 
     def train_model(self, dataset, hyperpm):
-        epochs = hyperpm['nepoch']
-
-        model = DisenGCN(self.in_dim, dataset.get_nclass(), hyperpm).to(self.device)
+        nepoch = hyperpm['nepoch']
+        model = DisenGCN(inp_dim=dataset.inp_dim, num_classes=dataset.get_nclass(), **hyperpm).to(self.device)
         model.acc_list = []
         optimizer = torch.optim.Adam(model.parameters(), lr=hyperpm['lr'], weight_decay=hyperpm['reg'])
 
-        pbar = tqdm(range(epochs), position=1, leave=False, desc='epoch')
+        pbar = tqdm(range(nepoch), position=1, leave=False, desc='epoch')
         early_count, best_acc, best_model = 0, 0, None
 
         trn_idx, val_idx, tst_idx = dataset.get_idx()
-        _, feat, targ = dataset.get_graph_feat_targ()
+        feat, targ = dataset.get_feat_targ()
         src_trg_edges = dataset.get_src_trg_edges()
-
+        ce_loss = torch.nn.CrossEntropyLoss()
+        
         for epoch in pbar:
             model.train()
             optimizer.zero_grad()
 
-            pred_prob = model(feat, src_trg_edges)
-            loss = F.nll_loss(pred_prob[trn_idx], targ[trn_idx])
+            logit = model(feat, src_trg_edges)
+            loss = ce_loss(logit[trn_idx], targ[trn_idx])
             loss.backward()
             optimizer.step()
 
@@ -48,7 +47,7 @@ class MyTrainer:
                 early_count += 1
 
             pbar.write(
-                f'Epoch : {epoch + 1:02}/{epochs}    loss : {loss:.4f}    trn_acc : {trn_acc:.4f} val_acc : {val_acc:.4f}')
+                f'Epoch : {epoch + 1:02}/{nepoch}    loss : {loss:.4f}    trn_acc : {trn_acc:.4f} val_acc : {val_acc:.4f}')
             pbar.update()
 
             if (hyperpm['early'] != None and early_count == hyperpm['early']):

@@ -12,8 +12,7 @@ from data import DataLoader
 
 def run_model(device, hyperpm, dataset):
     in_dim = dataset.feat.shape[1]
-    trainer = MyTrainer(device=device,
-                        in_dim=in_dim)
+    trainer = MyTrainer(device=device)
 
     if (hyperpm['early'] == -1):
         logger.info("Train model without early-stopping.")
@@ -31,31 +30,33 @@ def run_model(device, hyperpm, dataset):
 
 def main(datadir='datasets/',
          dataname='Cora',
-         bidirect=True,
          seed=None,
          nepoch=200,
          early=8,
-         lr=0.02,
-         reg=0.0036,
+         lr=0.01,
+         reg=0.002,
          dropout=0.35,
-         nlayer=5,
+         num_layers=4,
          init_k=8,
-         ndim=64,
-         routit=6):
+         delta_k=1,
+         hid_dim=64,
+         routit=7,
+         tau=1):
     """
     :param datadir: directory of dataset
     :param dataname: name of the dataset
-    :param bidirect : Use graph as undirected
     :param seed : seed
     :param nepoch: Max number of epochs to train
     :param early: Extra iterations before early-stopping(default : -1; not using early-stopping) //8
     :param lr: Initial learning rate
     :param reg: Weight decay (L2 loss on parameters)
     :param dropout: Dropout rate (1 - keep probability)
-    :param nlayer: Number of conv layers
-    :param init_k: Maximum number of capsules per layer
-    :param ndim: Output embedding dimensions
+    :param num_layers: Number of conv layers
+    :param init_k: Maximum number of capsules 
+    :param delta_k: difference of number of capsules per each layer
+    :param hid_dim: Output embedding dimensions
     :param routit: Number of iterations when routing
+    :param tau: Softmax temperature
     """
 
     logger.info("The main procedure has started with the following parameters:")
@@ -64,7 +65,6 @@ def main(datadir='datasets/',
     param['datadir'] = datadir
     param['dataname'] = dataname
     param['device'] = device
-    param['bidirect'] = bidirect
     param['seed'] = seed
     log_param(param)
 
@@ -75,18 +75,17 @@ def main(datadir='datasets/',
     hyperpm['early'] = early
     hyperpm['reg'] = reg
     hyperpm['dropout'] = dropout
-    hyperpm['nlayer'] = nlayer
+    hyperpm['num_layers'] = num_layers
     hyperpm['init_k'] = init_k
-    hyperpm['ndim'] = ndim
+    hyperpm['delta_k'] = delta_k
+    hyperpm['hid_dim'] = hid_dim
     hyperpm['routit'] = routit
+    hyperpm['tau'] = tau
     log_param(hyperpm)
 
     dataset = DataLoader(data_dir=param['datadir'],
                          data_name=param['dataname'],
-                         bidirection=bidirect,
                          device=device)
-
-    set_rng_seed(random.randint(1, 1000))
 
     accuracy = run_model(device=device,
                          hyperpm=hyperpm,
