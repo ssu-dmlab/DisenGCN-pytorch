@@ -19,7 +19,7 @@ class MyTrainer:
         model.acc_list = []
         optimizer = torch.optim.Adam(model.parameters(), lr=hyperpm['lr'], weight_decay=hyperpm['reg'])
 
-        pbar = tqdm(range(nepoch), position=1, leave=False, desc='epoch')
+        pbar = tqdm(range(nepoch), desc='epoch')
         early_count, best_acc, best_model = 0, 0, None
 
         trn_idx, val_idx, tst_idx = dataset.get_idx()
@@ -46,9 +46,8 @@ class MyTrainer:
             else:
                 early_count += 1
 
-            pbar.write(
+            pbar.set_description(
                 f'Epoch : {epoch + 1:02}/{nepoch}    loss : {loss:.4f}    trn_acc : {trn_acc:.4f} val_acc : {val_acc:.4f}')
-            pbar.update()
 
             if (hyperpm['early'] != None and early_count == hyperpm['early']):
                 break

@@ -54,10 +54,10 @@ python3 -m src.main \
 | `reg` | L2 Regularization (weight decay) rate  | `0.003`|
 | `dropout` | Dropout rate (1 - keep probability) | `0.2`|
 | `num_layers` | Number of hidden (DisenConv) layers | `5`|
-| `init_k` | Initial number of channels in conv layer | `8`|
-| `delta_k` | Difference in the number of capsules per layer
+| `init_k` | Initial number of channels in conv layer | `4`|
+| `delta_k` | Difference in the number of capsules per layer | `0` |
 | `hid_dim` | Initial embedding dimention | `64`|
-| `routit` | Number of iterations in routing | `6` |
+| `routit` | Number of iterations in routing | `7` |
 | `tau` | Softmax temperature | `1` |
 
 
@@ -72,19 +72,17 @@ For the other hyperparameters, we use default values as above.
 
 | Hyperparameters |   Cora    | Citeseer   |    Pubmed   |
 |----------------|----------|-------------|:-----------:|
-|     lr         |    0.04  |     0.02    |      0.03   |
-|     reg        |    0.004 |  0.006      |      0.02   |
-|     dropout    |    0.45  |   0.2       |      0.05   |
-|     num_layers     |     2    |    6        |      5      |
+|     lr         |    0.03  |     0.03    |      0.008   |
+|     reg        |    0.004 |  0.003      |      0.03   |
+|     dropout    |    0.6  |   0.55       |      0.6   |
+|     num_layers     |     4    |    3        |      3      |
  
 
-We summarize average accuracies with their standard deviations of 10 runs in the following table, and compare them to the results reported in the original paper. 
-As shown in the table, our results are slightly better and more stable than the original results. 
+We summarize average accuracies with their standard deviations of 10 runs in the following table.
 
 |          Accuracy            |             Cora          |          Citeseer        |           Pubmed           |
 |------------------------------|---------------------------|--------------------------|:--------------------------:|
-|   Original (mean / std)    |     0.811 /  0.001        |  0.785 / 0.016           |            0.692 / 0.012   |
-|     This (mean / std)    |     0.814 / 0.001         |  0.795 / 0.005           |           0.705 / 0.009    |
+|     This (mean / std)    |     0.828 / 0.008         |  0.724 / 0.015           |           0.797 / 0.009    |
  
 
 

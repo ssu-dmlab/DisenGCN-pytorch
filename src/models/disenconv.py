@@ -3,15 +3,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class InitDisenLayer(nn.Module):
-    def __init__(self, inp_dim, fac_dim, num_factors):
+    def __init__(self, inp_dim, hid_dim, num_factors):
         super(InitDisenLayer, self).__init__()
 
         self.inp_dim = inp_dim
-        self.fac_dim = fac_dim
+        self.hid_dim = (hid_dim//num_factors) * num_factors
         self.num_factors = num_factors
         
-        self.factor_lins = nn.ModuleList(
-            [nn.Linear(self.inp_dim, self.fac_dim) for k in range(self.num_factors)])
+        self.factor_lins = nn.Linear(self.inp_dim, self.hid_dim)
         
         self.reset_parameters()
 
@@ -22,10 +21,9 @@ class InitDisenLayer(nn.Module):
                 nn.init.zeros_(m.bias)
 
     def forward(self, X):
-        z = [self.factor_lins[k](X) for k in range(self.num_factors)] 
-        z = torch.stack(z, dim=1) # (N, K, D)
-        z = F.normalize(torch.relu(z), dim=2)
-        return z
+        Z = self.factor_lins(X).view(-1, self.num_factors, self.hid_dim //self.num_factors)
+        Z = F.normalize(torch.relu(Z), dim=2)
+        return Z
 
 
 # Feature disentangle layer
@@ -44,20 +42,9 @@ class RoutingLayer(nn.Module):
         c = x  # node-neighbor attention aspect factor
 
         for t in range(self.routit):
-            p = (z[src] * c[trg]).sum(dim=2, keepdim=True)  # update node-neighbor attention aspect factor
+            p = (z[trg] * c[src]).sum(dim=2, keepdim=True)  # update node-neighbor attention aspect factor
             p = F.softmax(p/self.tau, dim=1) # (M, K, 1)
             weight_sum = (p * z[trg])  # weight sum (node attention * neighbors feature)
-            c = c.index_add_(0, src, weight_sum)  # update output embedding
+            c = z + torch.zeros_like(z).index_add_(0, src, weight_sum)   # update output embedding
             c = F.normalize(c, dim=2)  # embedding normalize aspect factor
-        return c.view(n, -1)
-
-class DisenConv(nn.Module):
-    def __init__(self, inp_dim, hid_dim, num_factors, routit, tau):
-        super(DisenConv, self).__init__()
-        self.init_disen = InitDisenLayer(inp_dim, hid_dim, num_factors)
-        self.neigh_rout = RoutingLayer(num_factors, routit, tau)
-
-    def forward(self, X, edges):
-        z = self.init_disen(X)
-        z = self.neigh_rout(z, edges)
-        return z
+        return c

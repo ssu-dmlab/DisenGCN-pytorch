@@ -2,8 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from tqdm import tqdm
-from .disenconv import DisenConv
-
+from .disenconv import RoutingLayer, InitDisenLayer
 
 class DisenGCN(nn.Module):
     def __init__(self, 
@@ -18,12 +17,13 @@ class DisenGCN(nn.Module):
                  num_layers,
                  **kwargs):
         super(DisenGCN, self).__init__()
-
+        self.init_disen = InitDisenLayer(inp_dim, hid_dim, init_k)
+        
         self.conv_layers = nn.ModuleList()
         k = init_k
         for l in range(num_layers):
             fac_dim = hid_dim // k
-            self.conv_layers.append(DisenConv(inp_dim, fac_dim, k, routit, tau))
+            self.conv_layers.append(RoutingLayer(k, routit, tau))
             inp_dim = fac_dim * k
             k -= delta_k   
         
@@ -36,9 +36,9 @@ class DisenGCN(nn.Module):
         return F.dropout(X, p=self.dropout, training=self.training)
         
     def forward(self, X, edges):
-        Z = X
-        for disen_conv in tqdm(self.conv_layers, position=0, leave=False, desc='DisenConv', disable=not self.training):
+        Z = self.init_disen(X)
+        for disen_conv in self.conv_layers:
             Z = disen_conv(Z, edges)
             Z = self._dropout(torch.relu(Z))
-        Z = self.classifier(Z)
+        Z = self.classifier(Z.reshape(len(Z), -1))
         return Z

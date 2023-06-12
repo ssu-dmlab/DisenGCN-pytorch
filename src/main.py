@@ -32,13 +32,13 @@ def main(datadir='datasets/',
          dataname='Cora',
          seed=None,
          nepoch=200,
-         early=8,
-         lr=0.01,
-         reg=0.002,
-         dropout=0.35,
-         num_layers=4,
+         early=None,
+         lr=0.03,
+         reg=0.003,
+         dropout=0.2,
+         num_layers=5,
          init_k=8,
-         delta_k=1,
+         delta_k=0,
          hid_dim=64,
          routit=7,
          tau=1):
@@ -82,7 +82,9 @@ def main(datadir='datasets/',
     hyperpm['routit'] = routit
     hyperpm['tau'] = tau
     log_param(hyperpm)
-
+    
+    # set_rng_seed(1)
+    
     dataset = DataLoader(data_dir=param['datadir'],
                          data_name=param['dataname'],
                          device=device)
