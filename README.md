@@ -72,17 +72,18 @@ For the other hyperparameters, we use default values as above.
 
 | Hyperparameters |   Cora    | Citeseer   |    Pubmed   |
 |----------------|----------|-------------|:-----------:|
-|     lr         |    0.03  |     0.03    |      0.008   |
-|     reg        |    0.004 |  0.003      |      0.03   |
-|     dropout    |    0.6  |   0.55       |      0.6   |
-|     num_layers     |     4    |    3        |      3      |
+|     lr         |    0.034  |     0.03    |      0.048   |
+|     reg        |    0.003 |  0.003      |      0.007   |
+|     dropout    |    0.65  |   0.55       |      0.35   |
+|     num_layers     |     4    |    3        |      4      |
+| init_k | 4 | 4 | 4|
  
 
 We summarize average accuracies with their standard deviations of 10 runs in the following table.
 
 |          Accuracy            |             Cora          |          Citeseer        |           Pubmed           |
 |------------------------------|---------------------------|--------------------------|:--------------------------:|
-|     This (mean / std)    |     0.828 / 0.008         |  0.724 / 0.015           |           0.797 / 0.009    |
+|     This (mean / std)    |     0.833 / 0.004         |  0.724 / 0.015           |           0.803 / 0.008    |
  
 
 
